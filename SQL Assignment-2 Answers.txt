@@ -1,0 +1,112 @@
+1.SELECT c.CountryName, ct.Continent
+  FROM Countries c
+  JOIN Continents ct ON c.Continent = ct.ContID
+  ORDER BY ct.Continent;
+
+2.SELECT ct.Continent, COUNT(c.CountryID) AS CountryCount
+  FROM Continents ct
+  LEFT JOIN Countries c ON c.Continent = ct.ContID
+  GROUP BY ct.Continent;
+
+3.SELECT c.CountryName
+  FROM Countries c
+  LEFT JOIN Car_Makers cm ON c.CountryID = cm.Country
+  WHERE cm.ID IS NULL;
+
+4.SELECT cm.Maker
+  FROM Car_Makers cm
+  JOIN Countries c ON cm.Country = c.CountryID
+  WHERE c.CountryName = 'Japan';
+
+5.SELECT cm.Maker
+  FROM Car_Makers cm
+  JOIN Countries c ON cm.Country = c.CountryID
+  WHERE c.CountryName IN ('France', 'USA');
+
+6.SELECT c.CountryName, ct.Continent
+  FROM Car_Makers cm
+  JOIN Countries c ON cm.Country = c.CountryID
+  JOIN Continents ct ON c.Continent = ct.ContID
+  WHERE cm.Maker = 'Volvo';
+
+7.SELECT md.Model
+  FROM Model_Details md
+  JOIN Car_Makers cm ON md.Maker = cm.ID
+  WHERE cm.FullName = 'Ford Motor Company';
+
+8.SELECT COUNT(md.ModelID) AS GermanCarModelCount
+  FROM Model_Details md
+  JOIN Car_Makers cm ON md.Maker = cm.ID
+  JOIN Countries c ON cm.Country = c.CountryID
+  WHERE c.CountryName = 'Germany';
+
+9.SELECT md.Model, cm.Maker, cm.FullName
+  FROM Model_Details md
+  JOIN Car_Makers cm ON md.Maker = cm.ID
+  JOIN Countries c ON cm.Country = c.CountryID
+  WHERE c.CountryName = 'Japan';
+
+10.-- Highest and lowest MPG:
+   SELECT cn.Descr, cd.mpg, cm.Maker, c.CountryName, ct.Continent
+   FROM Car_Details cd
+   JOIN Car_Names cn ON cd.ID = cn.ID
+   JOIN Model_Details md ON cn.Model = md.Model
+   JOIN Car_Makers cm ON md.Maker = cm.ID
+   JOIN Countries c ON cm.Country = c.CountryID
+   JOIN Continents ct ON c.Continent = ct.ContID
+   WHERE cd.mpg = (SELECT MAX(mpg) FROM Car_Details)
+      OR cd.mpg = (SELECT MIN(mpg) FROM Car_Details);
+
+11.SELECT year, COUNT(ID) AS CarCount
+   FROM Car_Details
+   GROUP BY year
+   ORDER BY CarCount DESC
+   FETCH FIRST 1 ROWS ONLY;
+
+12.SELECT year, COUNT(ID) AS CarCount
+   FROM Car_Details
+   GROUP BY year
+   ORDER BY CarCount ASC
+   FETCH FIRST 1 ROWS ONLY;
+
+13.SELECT year, 
+         MIN(mpg) AS MinMpg, MAX(mpg) AS MaxMpg, AVG(mpg) AS AvgMpg,
+         MIN(cylinders) AS MinCylinders, MAX(cylinders) AS MaxCylinders, AVG(cylinders) AS AvgCylinders,
+         MIN(edispl) AS MinEdispl, MAX(edispl) AS MaxEdispl, AVG(edispl) AS AvgEdispl,
+         MIN(horsepower) AS MinHorsepower, MAX(horsepower) AS MaxHorsepower, AVG(horsepower) AS AvgHorsepower,
+         MIN(weight) AS MinWeight, MAX(weight) AS MaxWeight, AVG(weight) AS AvgWeight,
+         MIN(accel) AS MinAccel, MAX(accel) AS MaxAccel, AVG(accel) AS AvgAccel
+   FROM Car_Details
+   GROUP BY year;
+
+14.-- Mean:
+   SELECT AVG(horsepower) AS MeanHorsepower, 
+          AVG(weight) AS MeanWeight, 
+          AVG(accel) AS MeanAccel
+   FROM Car_Details;
+
+   -- Median:
+   SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY horsepower) AS MedianHorsepower,
+          PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weight) AS MedianWeight,
+          PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY accel) AS MedianAccel
+   FROM Car_Details;
+
+   -- Standard deviation:
+   SELECT STDDEV(horsepower) AS StdDevHorsepower, 
+          STDDEV(weight) AS StdDevWeight, 
+          STDDEV(accel) AS StdDevAccel
+   FROM Car_Details;
+
+15.Continents (ContID is the primary key) → Countries (Continent is a foreign key).
+   Countries (CountryID is the primary key) → Car_Makers (Country is a foreign key).
+   Car_Makers (ID is the primary key) → Model_Details (Maker is a foreign key).
+   Model_Details (ModelID is the primary key, Maker is a foreign key) → Car_Names (Model is a foreign key).
+   Car_Names (ID is the primary key) → Car_Details (ID is a foreign key).
+
+
+
+
+
+
+
+
