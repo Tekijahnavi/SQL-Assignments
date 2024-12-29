@@ -1,2 +1,2 @@
-# SQL-Assignment-1
+# SQL-Assignments
 SQL Internship 
